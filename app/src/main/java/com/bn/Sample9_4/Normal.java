@@ -1,8 +1,9 @@
 package com.bn.Sample9_4;
 
+import java.io.Serializable;
 import java.util.Set;
 //表示法向量的类，此类的一个对象表示一个法向量
-public class Normal 
+public class Normal
 {
    public static final float DIFF=0.0000001f;//判断两个法向量是否相同的阈值
    //法向量在XYZ轴上的分量

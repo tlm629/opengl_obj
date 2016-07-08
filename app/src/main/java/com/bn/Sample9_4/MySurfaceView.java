@@ -1,4 +1,5 @@
 package com.bn.Sample9_4;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -154,7 +155,8 @@ class MySurfaceView extends GLSurfaceView
             MatrixState.setLightLocation(40, 10, 20);
             //加载要绘制的物体
             Log.e("fancl","Start loading");
-            lovo=LoadUtil.loadFromFile("iphone6.obj", MySurfaceView.this.getResources(),MySurfaceView.this);
+            File file = new File("lovo");
+            lovo = LoadUtil.loadFromFile("iphone6.obj", MySurfaceView.this.getResources(),MySurfaceView.this);
             Log.e("fancl","Finish loading");
             //加载纹理
             textureId=initTexture(R.drawable.ghxp);

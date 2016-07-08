@@ -1,11 +1,18 @@
 package com.bn.Sample9_4;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import android.content.res.Resources;
+import android.os.Environment;
 import android.util.Log;
 
 public class LoadUtil 
@@ -35,6 +42,35 @@ public class LoadUtil
     {
     	//加载后物体的引用
     	LoadedObjectVertexNormalTexture lo=null;
+
+		File path = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "AlfaCamera");
+		File file = new File(path, "lovo5");
+		if (file.exists()) {
+			FloatFancl obj = null;
+			try {
+				Log.e("fancl", "l1");
+				FileInputStream in = new FileInputStream(file);
+				ObjectInputStream objIn = new ObjectInputStream(in);
+				Log.e("fancl", "l2");
+				obj = (FloatFancl) objIn.readObject();
+				Log.e("fancl", "l3");
+				Log.i("fancl", Integer.toString(obj.vXYZ.length) + " " + Integer.toString(obj.nXYZ.length) + " " + Integer.toString(obj.tST.length));
+
+				objIn.close();
+				System.out.println("read object success!");
+			} catch (IOException e) {
+				System.out.println("read object failed");
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+			if (obj!=null) {
+				Log.e("fancl", "load and return");
+				return new LoadedObjectVertexNormalTexture(mv,obj.vXYZ,obj.nXYZ,obj.tST);
+			}
+		}
+
+
     	//原始顶点坐标列表--直接从obj文件中加载
     	ArrayList<Float> alv=new ArrayList<Float>();
     	//顶点组装面索引列表--根据面的信息从文件中加载
@@ -55,7 +91,8 @@ public class LoadUtil
     		InputStreamReader isr=new InputStreamReader(in);
     		BufferedReader br=new BufferedReader(isr);
     		String temps=null;
-    		
+
+			Log.e("fancl","p1");
     		//扫面文件，根据行类型的不同执行不同的处理逻辑
 		    while((temps=br.readLine())!=null) 
 		    {
@@ -161,8 +198,8 @@ public class LoadUtil
 		      		altResult.add(alt.get(indexTex*2));
 		      		altResult.add(alt.get(indexTex*2+1));
 		      	}		      		
-		    } 
-		    
+		    }
+			Log.e("fancl","p2");
 		    //生成顶点数组
 		    int size=alvResult.size();
 		    float[] vXYZ=new float[size];
@@ -170,7 +207,7 @@ public class LoadUtil
 		    {
 		    	vXYZ[i]=alvResult.get(i);
 		    }
-		    
+			Log.e("fancl","p3");
 		    //生成法向量数组
 		    float[] nXYZ=new float[alFaceIndex.size()*3];
 		    int c=0;
@@ -185,7 +222,7 @@ public class LoadUtil
 		    	nXYZ[c++]=tn[1];
 		    	nXYZ[c++]=tn[2];
 		    }
-		    
+			Log.e("fancl","p4");
 		    //生成纹理数组
 		    size=altResult.size();
 		    float[] tST=new float[size];
@@ -193,15 +230,33 @@ public class LoadUtil
 		    {
 		    	tST[i]=altResult.get(i);
 		    }
-		    
+			Log.e("fancl","p5");
 		    //创建3D物体对象
-		    lo=new LoadedObjectVertexNormalTexture(mv,vXYZ,nXYZ,tST);
+			FloatFancl floatFancl = new FloatFancl(vXYZ,nXYZ,tST);
+			try{
+				FileOutputStream fs = new FileOutputStream(file);
+				ObjectOutputStream os =  new ObjectOutputStream(fs);
+				os.writeObject(floatFancl);
+				os.flush();
+				os.close();
+				System.out.println("write object success!");
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
+
+
+
+		    lo = new LoadedObjectVertexNormalTexture(mv,vXYZ,nXYZ,tST);
+			Log.e("fancl","p6");
     	}
     	catch(Exception e)
     	{
     		Log.d("load error", "load error");
     		e.printStackTrace();
-    	}    	
+    	}
+
+
+
     	return lo;
     }
 }

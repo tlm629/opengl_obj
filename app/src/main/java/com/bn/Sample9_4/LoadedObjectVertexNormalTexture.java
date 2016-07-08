@@ -1,12 +1,13 @@
 package com.bn.Sample9_4;
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import android.opengl.GLES20;
 
 //加载后的物体——仅携带顶点信息，颜色随机
-public class LoadedObjectVertexNormalTexture
-{	
+public class LoadedObjectVertexNormalTexture {
+
 	int mProgram;//自定义渲染管线着色器程序id  
     int muMVPMatrixHandle;//总变换矩阵引用
     int muMMatrixHandle;//位置、旋转变换矩阵
